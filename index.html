@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ============ SEO META TAGS ============ -->
+    <title>Keshab Padhan | CS Student &amp; Developer</title>
+    <meta name="description"
+        content="Portfolio of Keshab Padhan, 2nd year BTech Computer Science student at SOA ITER. Aspiring software developer, DSA problem solver, and web developer. Open to internships." />
+    <meta name="author" content="Keshab Padhan" />
+    <meta name="keywords"
+        content="Keshab Padhan, Software Developer, CS Student, SOA ITER, DSA, Web Developer, Portfolio, Internship" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Keshab Padhan | CS Student &amp; Developer" />
+    <meta property="og:description"
+        content="Portfolio of Keshab Padhan, 2nd year BTech CS student at SOA ITER. Aspiring software developer and DSA problem solver." />
+    <meta property="og:url" content="https://keshabpadhan.github.io/" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- ============ FAVICON (inline SVG "KP") ============ -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23202020'/><text x='50' y='68' font-size='52' font-family='Arial, sans-serif' font-weight='bold' text-anchor='middle' fill='%23ffd100'>KP</text></svg>" />
+
+    <!-- ============ GOOGLE FONTS ============ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+
+    <!-- ============ FONT AWESOME ============ -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- ============ AOS.js (Animate On Scroll) ============ -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+    <!-- ============ SITE STYLES ============ -->
+    <link rel="stylesheet" href="style.css?v=11" />
+</head>
+
+<body>
+
+    <!-- ============ SCROLL PROGRESS BAR ============ -->
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+    <!-- ============ SIDE EMAIL PANEL ============ 
+    <div class="side-email" aria-hidden="true">
+        <a href="mailto:thekeshabpadhan@gmail.com" class="side-email__link" title="Email me">
+            <i class="fa-solid fa-envelope"></i>
+        </a>
+        <span class="side-email__text">thekeshabpadhan@gmail.com</span>
+    </div>-->
+
+    <!-- ============ ANIMATED BACKGROUND (grid + glow) ============ -->
+    <div class="bg-grid" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow--1" aria-hidden="true"></div>
+    <div class="bg-glow bg-glow--2" aria-hidden="true"></div>
+
+    <!-- ============ NAVBAR ============ -->
+    <header class="navbar" id="navbar">
+        <nav class="nav container" aria-label="Primary">
+            <a href="#home" class="nav__logo" aria-label="Keshab Padhan home">
+                <span class="nav__logo-bracket">&lt;</span>KP<span class="nav__logo-bracket">/&gt;</span>
+            </a>
+
+            <ul class="nav__menu" id="navMenu">
+                <li class="nav__item"><a href="#home" class="nav__link active">Home</a></li>
+                <li class="nav__item"><a href="#about" class="nav__link">About</a></li>
+                <li class="nav__item"><a href="#skills" class="nav__link">Skills</a></li>
+                <li class="nav__item"><a href="#projects" class="nav__link">Projects</a></li>
+                <li class="nav__item"><a href="#education" class="nav__link">Education</a></li>
+                <li class="nav__item"><a href="#coding" class="nav__link">Coding</a></li>
+                <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
+            </ul>
+
+            <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"
+                aria-controls="navMenu">
+                <span></span><span></span><span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+
+        <!-- ============ HERO SECTION ============ -->
+        <section class="hero section" id="home">
+            <!-- Floating shapes (pure CSS) -->
+            <div class="hero__shapes" aria-hidden="true">
+                <span class="shape shape--1"></span>
+                <span class="shape shape--2"></span>
+                <span class="shape shape--3"></span>
+                <span class="shape shape--4"></span>
+                <span class="shape shape--5"></span>
+            </div>
+
+            <div class="hero__container container">
+                <div class="hero__content">
+                    <p class="hero__greeting" data-aos="fade-up">
+                        <span class="hero__wave">👋</span> Hi, I'm
+                    </p>
+                    <h1 class="hero__name gradient-text" data-aos="fade-up" data-aos-delay="100">
+                        Keshab Padhan
+                    </h1>
+                    <h2 class="hero__typed" data-aos="fade-up" data-aos-delay="200">
+                        <span class="hero__typed-prefix">I'm a</span>
+                        <span class="typed-text" id="typed"></span>
+                    </h2>
+                    <p class="hero__bio" data-aos="fade-up" data-aos-delay="300">
+                        A passionate Computer Science student at SOA ITER, dedicated to writing
+                        clean code, solving complex problems, and building meaningful software
+                        applications.
+                    </p>
+
+                    <div class="hero__cta" data-aos="fade-up" data-aos-delay="400">
+                        <a href="#projects" class="btn btn--primary">
+                            <i class="fa-solid fa-laptop-code"></i> View My Work
+                        </a>
+                        <!-- TODO: place your resume PDF at assets/resume/keshab-padhan-resume.pdf -->
+                        <a href="assets/resume/keshab-padhan-resume.pdf" class="btn btn--ghost" download>
+                            <i class="fa-solid fa-download"></i> Download Resume
+                        </a>
+                        <a href="#contact" class="btn btn--outline">
+                            <i class="fa-solid fa-paper-plane"></i> Contact Me
+                        </a>
+                    </div>
+
+                    <div class="hero__socials" data-aos="fade-up" data-aos-delay="500">
+                        <a href="https://github.com/keshabpadhan" class="social-icon" target="_blank"
+                            rel="noopener noreferrer" aria-label="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/keshabpadhan/" class="social-icon" target="_blank"
+                            rel="noopener noreferrer" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://leetcode.com/u/keshabpadhan/" class="social-icon" target="_blank"
+                            rel="noopener noreferrer" aria-label="LeetCode">
+                            <i class="fa-solid fa-code"></i>
+                        </a>
+                        <a href="mailto:thekeshabpadhan@gmail.com" class="social-icon" aria-label="Email">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero__visual" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="hero__avatar">
+                        <div class="hero__avatar-orbit"></div>
+                        <div class="hero__avatar-ring"></div>
+                        <div class="hero__avatar-inner">
+                            <img src="assets/images/avatar-placeholder.png" alt="Keshab Padhan - Avatar" class="hero__avatar-img" />
+                        </div>
+                        <span class="hero__badge hero__badge--top"><i class="fa-brands fa-js"></i></span>
+                        <span class="hero__badge hero__badge--bottom"><i class="fa-solid fa-terminal"></i></span>
+                        <span class="hero__badge hero__badge--left"><i class="fa-brands fa-python"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#about" class="hero__scroll" aria-label="Scroll to About">
+                <span class="hero__scroll-text">Scroll</span>
+                <span class="hero__scroll-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </a>
+        </section>
+
+        <!-- ============ ABOUT SECTION ============ -->
+        <section class="about section" id="about">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">01 — Who I Am</span>
+                    <h2 class="section__title gradient-text">About Me</h2>
+                </div>
+
+                <div class="about__grid">
+                    <div class="about__card glass" data-aos="fade-right">
+                        <div class="about__avatar">
+                            <img src="assets/images/avatar-placeholder.png" alt="Keshab Padhan - Profile Avatar" class="about__avatar-img" />
+                        </div>
+                        <h3 class="about__card-name">Keshab Padhan</h3>
+                        <p class="about__card-role">CS Student &amp; Aspiring Developer</p>
+                        <div class="about__status">
+                            <span class="status-dot"></span> Open to Internships
+                        </div>
+                        <div class="about__card-socials">
+                            <a href="https://github.com/keshabpadhan" target="_blank" rel="noopener noreferrer"
+                                aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                            <a href="https://www.linkedin.com/in/keshabpadhan/" target="_blank"
+                                rel="noopener noreferrer" aria-label="LinkedIn"><i
+                                    class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="https://leetcode.com/u/keshabpadhan/" target="_blank" rel="noopener noreferrer"
+                                aria-label="LeetCode"><i class="fa-solid fa-code"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="about__content" data-aos="fade-left">
+                        <p class="about__lead">
+                            I'm a second-year <strong>BTech Computer Science</strong> student at
+                            <strong>SOA ITER</strong>, driven by a genuine curiosity for how software
+                            works and a love for turning ideas into working products.
+                        </p>
+                        <p class="about__text">
+                            My days revolve around sharpening my <strong>Data Structures &amp; Algorithms</strong>
+                            skills, exploring the fundamentals of computer science, and building projects
+                            that push me to learn something new. I care about writing clean, readable code
+                            and understanding the "why" behind every solution — not just the "how".
+                        </p>
+                        <p class="about__text">
+                            I'm a constant learner and a team player who enjoys collaborating, discussing
+                            approaches, and growing with the people around me. Right now, I'm actively
+                            looking for <strong>software development internships</strong> where I can
+                            contribute, learn from experienced engineers, and make a real impact.
+                        </p>
+
+                        <div class="about__info">
+                            <div class="about__info-item glass">
+                                <span class="about__info-label"><i class="fa-solid fa-user"></i> Name</span>
+                                <span class="about__info-value">Keshab Padhan</span>
+                            </div>
+                            <div class="about__info-item glass">
+                                <span class="about__info-label"><i class="fa-solid fa-building-columns"></i>
+                                    College</span>
+                                <span class="about__info-value">SOA ITER</span>
+                            </div>
+                            <div class="about__info-item glass">
+                                <span class="about__info-label"><i class="fa-solid fa-graduation-cap"></i> Year</span>
+                                <span class="about__info-value">2nd Year BTech CS</span>
+                            </div>
+                            <div class="about__info-item glass">
+                                <span class="about__info-label"><i class="fa-solid fa-envelope"></i> Email</span>
+                                <span class="about__info-value about__info-value--sm">thekeshabpadhan@gmail.com</span>
+                            </div>
+                            <div class="about__info-item glass">
+                                <span class="about__info-label"><i class="fa-solid fa-circle-check"></i> Status</span>
+                                <span class="about__info-value highlight">Open to Internships</span>
+                            </div>
+                        </div>
+
+                        <!-- TODO: place your resume PDF at assets/resume/keshab-padhan-resume.pdf -->
+                        <a href="assets/resume/keshab-padhan-resume.pdf" class="btn btn--primary about__resume"
+                            download>
+                            <i class="fa-solid fa-download"></i> Download Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SKILLS SECTION ============ -->
+        <section class="skills section" id="skills">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">02 — What I Work With</span>
+                    <h2 class="section__title gradient-text">Tech Stack &amp; Skills</h2>
+                </div>
+
+                <div class="skills__grid">
+                    <!-- Languages -->
+                    <article class="skills__card glass" data-aos="fade-up">
+                        <div class="skills__card-head">
+                            <span class="skills__icon"><i class="fa-solid fa-code"></i></span>
+                            <h3 class="skills__card-title">Languages</h3>
+                        </div>
+                        <div class="skills__pills">
+                            <span class="pill"><i class="fa-solid fa-c"></i> C</span>
+                            <span class="pill"><i class="fa-solid fa-code"></i> C++</span>
+                            <span class="pill"><i class="fa-brands fa-java"></i> Java</span>
+                            <span class="pill"><i class="fa-brands fa-python"></i> Python</span>
+                            <span class="pill"><i class="fa-brands fa-js"></i> JavaScript</span>
+                        </div>
+                    </article>
+
+                    <!-- Frontend -->
+                    <article class="skills__card glass" data-aos="fade-up" data-aos-delay="100">
+                        <div class="skills__card-head">
+                            <span class="skills__icon"><i class="fa-solid fa-palette"></i></span>
+                            <h3 class="skills__card-title">Frontend</h3>
+                        </div>
+                        <div class="skills__pills">
+                            <span class="pill"><i class="fa-brands fa-html5"></i> HTML5</span>
+                            <span class="pill"><i class="fa-brands fa-css3-alt"></i> CSS3</span>
+                            <span class="pill"><i class="fa-brands fa-js"></i> JavaScript</span>
+                            <!-- TODO: remove React if you haven't learned it yet -->
+                            <span class="pill pill--todo"><i class="fa-brands fa-react"></i> React <span
+                                    class="todo-tag">TODO</span></span>
+                        </div>
+                    </article>
+
+                    <!-- Backend -->
+                    <article class="skills__card glass" data-aos="fade-up" data-aos-delay="150">
+                        <div class="skills__card-head">
+                            <span class="skills__icon"><i class="fa-solid fa-server"></i></span>
+                            <h3 class="skills__card-title">Backend</h3>
+                        </div>
+                        <div class="skills__pills">
+                            <!-- TODO: remove any backend tech you haven't learned yet -->
+                            <span class="pill pill--todo"><i class="fa-brands fa-node-js"></i> Node.js <span
+                                    class="todo-tag">TODO</span></span>
+                            <span class="pill pill--todo"><i class="fa-solid fa-server"></i> Express.js <span
+                                    class="todo-tag">TODO</span></span>
+                        </div>
+                    </article>
+
+                    <!-- Databases -->
+                    <article class="skills__card glass" data-aos="fade-up" data-aos-delay="200">
+                        <div class="skills__card-head">
+                            <span class="skills__icon"><i class="fa-solid fa-database"></i></span>
+                            <h3 class="skills__card-title">Databases</h3>
+                        </div>
+                        <div class="skills__pills">
+                            <!-- TODO: remove any database you haven't learned yet -->
+                            <span class="pill pill--todo"><i class="fa-solid fa-database"></i> SQL <span
+                                    class="todo-tag">TODO</span></span>
+                            <span class="pill pill--todo"><i class="fa-solid fa-database"></i> MySQL <span
+                                    class="todo-tag">TODO</span></span>
+                            <span class="pill pill--todo"><i class="fa-solid fa-leaf"></i> MongoDB <span
+                                    class="todo-tag">TODO</span></span>
+                        </div>
+                    </article>
+
+                    <!-- Tools & Platforms -->
+                    <article class="skills__card glass" data-aos="fade-up" data-aos-delay="250">
+                        <div class="skills__card-head">
+                            <span class="skills__icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                            <h3 class="skills__card-title">Tools &amp; Platforms</h3>
+                        </div>
+                        <div class="skills__pills">
+                            <span class="pill"><i class="fa-brands fa-git-alt"></i> Git</span>
+                            <span class="pill"><i class="fa-brands fa-github"></i> GitHub</span>
+                            <span class="pill"><i class="fa-solid fa-code"></i> VS Code</span>
+                            <span class="pill"><i class="fa-brands fa-linux"></i> Linux</span>
+                            <span class="pill"><i class="fa-solid fa-paper-plane"></i> Postman</span>
+                        </div>
+                    </article>
+
+                    <!-- Core CS -->
+                    <article class="skills__card glass" data-aos="fade-up" data-aos-delay="300">
+                        <div class="skills__card-head">
+                            <span class="skills__icon"><i class="fa-solid fa-microchip"></i></span>
+                            <h3 class="skills__card-title">Core CS</h3>
+                        </div>
+                        <div class="skills__pills">
+                            <span class="pill"><i class="fa-solid fa-sitemap"></i> DSA</span>
+                            <span class="pill"><i class="fa-solid fa-cubes"></i> OOP</span>
+                            <span class="pill"><i class="fa-solid fa-database"></i> DBMS</span>
+                            <span class="pill"><i class="fa-solid fa-gears"></i> Operating Systems</span>
+                            <span class="pill"><i class="fa-solid fa-network-wired"></i> Computer Networks</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PROJECTS SECTION ============ -->
+        <section class="projects section" id="projects">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">03 — Things I've Built</span>
+                    <h2 class="section__title gradient-text">My Projects</h2>
+                    <p class="section__subtitle">A selection of projects I've built while learning and experimenting.
+                    </p>
+                </div>
+
+                <!-- REPLACE THIS WITH YOUR REAL PROJECTS -->
+                <div class="projects__grid">
+
+                    <!-- Project 1 -->
+                    <article class="project-card glass" data-aos="fade-up">
+                        <div class="project-card__top">
+                            <span class="project-card__icon"><i class="fa-solid fa-folder-open"></i></span>
+                            <div class="project-card__links">
+                                <a href="https://github.com/keshabpadhan" target="_blank" rel="noopener noreferrer"
+                                    aria-label="GitHub repository"><i class="fa-brands fa-github"></i></a>
+                                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Live demo"><i
+                                        class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                            </div>
+                        </div>
+                        <h3 class="project-card__title">TODO — Project Name #1</h3>
+                        <p class="project-card__desc">
+                            TODO — Describe what this project does, the problem it solves, and what
+                            you learned building it. Keep it to 2–3 concise, impactful sentences.
+                        </p>
+                        <div class="project-card__tags">
+                            <span class="tag">TODO</span>
+                            <span class="tag">Tech</span>
+                            <span class="tag">Stack</span>
+                        </div>
+                        <div class="project-card__actions">
+                            <a href="https://github.com/keshabpadhan" class="btn btn--sm btn--outline" target="_blank"
+                                rel="noopener noreferrer">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                            <a href="#" class="btn btn--sm btn--ghost" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 2 -->
+                    <article class="project-card glass" data-aos="fade-up" data-aos-delay="100">
+                        <div class="project-card__top">
+                            <span class="project-card__icon"><i class="fa-solid fa-folder-open"></i></span>
+                            <div class="project-card__links">
+                                <a href="https://github.com/keshabpadhan" target="_blank" rel="noopener noreferrer"
+                                    aria-label="GitHub repository"><i class="fa-brands fa-github"></i></a>
+                                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Live demo"><i
+                                        class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                            </div>
+                        </div>
+                        <h3 class="project-card__title">TODO — Project Name #2</h3>
+                        <p class="project-card__desc">
+                            TODO — Describe what this project does, the problem it solves, and what
+                            you learned building it. Keep it to 2–3 concise, impactful sentences.
+                        </p>
+                        <div class="project-card__tags">
+                            <span class="tag">TODO</span>
+                            <span class="tag">Tech</span>
+                            <span class="tag">Stack</span>
+                        </div>
+                        <div class="project-card__actions">
+                            <a href="https://github.com/keshabpadhan" class="btn btn--sm btn--outline" target="_blank"
+                                rel="noopener noreferrer">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                            <a href="#" class="btn btn--sm btn--ghost" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- Project 3 -->
+                    <article class="project-card glass" data-aos="fade-up" data-aos-delay="200">
+                        <div class="project-card__top">
+                            <span class="project-card__icon"><i class="fa-solid fa-folder-open"></i></span>
+                            <div class="project-card__links">
+                                <a href="https://github.com/keshabpadhan" target="_blank" rel="noopener noreferrer"
+                                    aria-label="GitHub repository"><i class="fa-brands fa-github"></i></a>
+                                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Live demo"><i
+                                        class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                            </div>
+                        </div>
+                        <h3 class="project-card__title">TODO — Project Name #3</h3>
+                        <p class="project-card__desc">
+                            TODO — Describe what this project does, the problem it solves, and what
+                            you learned building it. Keep it to 2–3 concise, impactful sentences.
+                        </p>
+                        <div class="project-card__tags">
+                            <span class="tag">TODO</span>
+                            <span class="tag">Tech</span>
+                            <span class="tag">Stack</span>
+                        </div>
+                        <div class="project-card__actions">
+                            <a href="https://github.com/keshabpadhan" class="btn btn--sm btn--outline" target="_blank"
+                                rel="noopener noreferrer">
+                                <i class="fa-brands fa-github"></i> Code
+                            </a>
+                            <a href="#" class="btn btn--sm btn--ghost" target="_blank" rel="noopener noreferrer">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Live Demo
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+                <!-- END REAL PROJECTS -->
+
+                <div class="projects__more" data-aos="fade-up">
+                    <a href="https://github.com/keshabpadhan?tab=repositories" class="btn btn--outline" target="_blank"
+                        rel="noopener noreferrer">
+                        <i class="fa-brands fa-github"></i> See more on GitHub
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ EDUCATION SECTION ============ -->
+        <section class="education section" id="education">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">04 — My Journey</span>
+                    <h2 class="section__title gradient-text">Education</h2>
+                </div>
+
+                <div class="timeline">
+                    <!-- College -->
+                    <div class="timeline__item" data-aos="fade-up">
+                        <span class="timeline__dot"></span>
+                        <div class="timeline__card glass">
+                            <div class="timeline__card-head">
+                                <span class="timeline__icon"><i class="fa-solid fa-building-columns"></i></span>
+                                <div>
+                                    <h3 class="timeline__degree">BTech in Computer Science &amp; Engineering</h3>
+                                    <p class="timeline__place">SOA ITER — Institute of Technical Education and Research
+                                    </p>
+                                    <p class="timeline__sub">Siksha 'O' Anusandhan University, Bhubaneswar</p>
+                                </div>
+                            </div>
+                            <div class="timeline__meta">
+                                <!-- TODO: confirm your exact start/end years -->
+                                <span class="timeline__badge"><i class="fa-solid fa-calendar"></i> 2025 – 2029</span>
+                                <span class="timeline__badge"><i class="fa-solid fa-graduation-cap"></i> Currently 2nd
+                                    Year</span>
+                                <!-- TODO: add your GPA when available -->
+                                <span class="timeline__badge"><i class="fa-solid fa-star"></i> GPA: 8.5</span>
+                            </div>
+                            <div class="timeline__course">
+                                <p class="timeline__course-label">Relevant Coursework</p>
+                                <div class="timeline__course-tags">
+                                    <span class="tag">Data Structures &amp; Algorithms</span>
+                                    <span class="tag">Object Oriented Programming</span>
+                                    <span class="tag">Database Management Systems</span>
+                                    <span class="tag">Operating Systems</span>
+                                    <span class="tag">Computer Networks</span>
+                                    <span class="tag">Discrete Mathematics</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- School (optional) -->
+                    <!-- TODO: Add your 10th & 12th school details, or remove this card entirely -->
+                    <div class="timeline__item" data-aos="fade-up" data-aos-delay="100">
+                        <span class="timeline__dot"></span>
+                        <div class="timeline__card glass">
+                            <div class="timeline__card-head">
+                                <span class="timeline__icon"><i class="fa-solid fa-school"></i></span>
+                                <div>
+                                    <h3 class="timeline__degree">Senior Secondary Schooling</h3>
+                                    <p class="timeline__place">Oneness International School, Khordha</p>
+                                    <p class="timeline__sub">Board (CBSE), Stream Science</p>
+                                </div>
+                            </div>
+                            <div class="timeline__meta">
+                                <span class="timeline__badge"><i class="fa-solid fa-calendar"></i> 2022 – 2024</span>
+                                <span class="timeline__badge"><i class="fa-solid fa-star"></i> Percentage: 74.8%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Secondary Schooling -->
+                    <div class="timeline__item" data-aos="fade-up" data-aos-delay="200">
+                        <span class="timeline__dot"></span>
+                        <div class="timeline__card glass">
+                            <div class="timeline__card-head">
+                                <span class="timeline__icon"><i class="fa-solid fa-school"></i></span>
+                                <div>
+                                    <h3 class="timeline__degree">Secondary Schooling</h3>
+                                    <p class="timeline__place">Kendriya Vidyalaya No.1, Badmal Bolangir</p>
+                                    <p class="timeline__sub">Board (CBSE), Class 1 – 10</p>
+                                </div>
+                            </div>
+                            <div class="timeline__meta">
+                                <span class="timeline__badge"><i class="fa-solid fa-calendar"></i> 2012 – 2022</span>
+                                <span class="timeline__badge"><i class="fa-solid fa-star"></i> Percentage: 95%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CODING PROFILES SECTION ============ -->
+        <section class="coding section" id="coding">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">05 — Where I Practice</span>
+                    <h2 class="section__title gradient-text">Coding Profiles</h2>
+                    <p class="section__subtitle">Follow along with my problem-solving and open-source journey.</p>
+                </div>
+
+                <div class="coding__grid">
+                    <!-- GitHub -->
+                    <article class="coding-card coding-card--github glass" data-aos="fade-up">
+                        <span class="coding-card__icon"><i class="fa-brands fa-github"></i></span>
+                        <h3 class="coding-card__title">GitHub</h3>
+                        <p class="coding-card__desc">Explore my open source projects and contributions.</p>
+                        <a href="https://github.com/keshabpadhan" class="btn btn--sm btn--outline" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Profile
+                        </a>
+                    </article>
+
+                    <!-- LeetCode -->
+                    <article class="coding-card coding-card--leetcode glass" data-aos="fade-up" data-aos-delay="100">
+                        <span class="coding-card__icon"><i class="fa-solid fa-code"></i></span>
+                        <h3 class="coding-card__title">LeetCode</h3>
+                        <p class="coding-card__desc">Consistent DSA practice and problem solving.</p>
+                        <a href="https://leetcode.com/u/keshabpadhan/" class="btn btn--sm btn--outline" target="_blank"
+                            rel="noopener noreferrer">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Profile
+                        </a>
+                    </article>
+
+                    <!-- LinkedIn -->
+                    <article class="coding-card coding-card--linkedin glass" data-aos="fade-up" data-aos-delay="200">
+                        <span class="coding-card__icon"><i class="fa-brands fa-linkedin-in"></i></span>
+                        <h3 class="coding-card__title">LinkedIn</h3>
+                        <p class="coding-card__desc">Professional network and continuous learning.</p>
+                        <a href="https://www.linkedin.com/in/keshabpadhan/" class="btn btn--sm btn--outline"
+                            target="_blank" rel="noopener noreferrer">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Visit Profile
+                        </a>
+                    </article>
+                </div>
+
+                <!-- GitHub contribution calendar & streak stats -->
+                <div class="coding__stats-dashboard" data-aos="fade-up">
+                    <!-- Dashboard Header -->
+                    <div class="dashboard-header">
+                        <div class="dashboard-user">
+                            <img src="assets/images/avatar-placeholder.png" alt="Keshab Padhan" class="dashboard-avatar" />
+                            <div class="dashboard-user-info">
+                                <span class="dashboard-handle">@keshabpadhan</span>
+                                <span class="dashboard-subtitle">Contribution Dashboard</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Grid -->
+                    <div class="dashboard-grid">
+                        <!-- GitHub Contributions Card -->
+                        <div class="dashboard-card github-card">
+                            <div class="github-header">
+                                <div class="github-brand">
+                                    <i class="fa-brands fa-github github-logo"></i>
+                                    <span class="github-title">GitHub</span>
+                                </div>
+                                <a href="https://github.com/keshabpadhan" target="_blank" rel="noopener noreferrer" class="github-username">
+                                    @keshabpadhan <i class="fa-solid fa-arrow-up-right-from-square github-arrow"></i>
+                                </a>
+                            </div>
+
+                            <div class="github-calendar-scroll" id="github-calendar-scroll">
+                                <div class="github-calendar-wrapper" id="github-calendar-wrapper">
+                                    <div class="github-calendar-months" id="github-calendar-months"></div>
+                                    <div class="github-calendar-days" id="github-calendar-days"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Custom Scrollbar/Slider -->
+                            <div class="github-slider-container">
+                                <button class="github-slider-btn prev-btn" id="github-prev-btn" aria-label="Scroll left">
+                                    <i class="fa-solid fa-caret-left"></i>
+                                </button>
+                                <div class="github-slider-track" id="github-slider-track">
+                                    <div class="github-slider-thumb" id="github-slider-thumb"></div>
+                                </div>
+                                <button class="github-slider-btn next-btn" id="github-next-btn" aria-label="Scroll right">
+                                    <i class="fa-solid fa-caret-right"></i>
+                                </button>
+                            </div>
+
+                            <div class="github-card-footer">
+                                <span class="github-contributions-count" id="github-total-contributions">... contributions in the last year</span>
+                            </div>
+                        </div>
+
+                        <!-- LeetCode Stats Card -->
+                        <div class="dashboard-card leetcode-card">
+                            <div class="leetcode-header">
+                                <div class="leetcode-brand">
+                                    <i class="fa-solid fa-code leetcode-logo"></i>
+                                    <span class="leetcode-title">LeetCode</span>
+                                </div>
+                                <a href="https://leetcode.com/u/keshabpadhan/" target="_blank" rel="noopener noreferrer" class="leetcode-username">
+                                    @keshabpadhan <i class="fa-solid fa-arrow-up-right-from-square leetcode-arrow"></i>
+                                </a>
+                            </div>
+
+                            <div class="leetcode-stats-content">
+                                <!-- Solved Section -->
+                                <div class="leetcode-solved-box">
+                                    <span class="leetcode-solved-num" id="leetcode-solved-count">--</span>
+                                    <span class="leetcode-solved-label">Questions Solved</span>
+                                    <span class="leetcode-solved-sub">Active Practice</span>
+                                </div>
+                                
+                                <div class="leetcode-divider"></div>
+
+                                <!-- Streak Section -->
+                                <div class="leetcode-streak-box">
+                                    <div class="leetcode-streak-num-container">
+                                        <i class="fa-solid fa-fire leetcode-fire-icon"></i>
+                                        <span class="leetcode-streak-num" id="leetcode-streak-count">--</span>
+                                    </div>
+                                    <span class="leetcode-streak-label">Current Streak</span>
+                                    <span class="leetcode-streak-sub" id="leetcode-streak-dates">-- days active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ACHIEVEMENTS & CERTIFICATIONS SECTION ============ -->
+        <section class="achievements section" id="achievements">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">06 — Milestones</span>
+                    <h2 class="section__title gradient-text">Achievements &amp; Certifications</h2>
+                </div>
+
+                <!-- ADD YOUR REAL ACHIEVEMENTS HERE -->
+                <div class="achievements__grid">
+                    <article class="achievement-card glass" data-aos="fade-up">
+                        <span class="achievement-card__icon"><i class="fa-solid fa-certificate"></i></span>
+                        <h3 class="achievement-card__title">Certifications <span class="todo-tag">TODO</span></h3>
+                        <p class="achievement-card__desc">
+                            TODO — Add certifications from Coursera, NPTEL, Udemy, HackerRank, etc.
+                            Include the issuing organization and year.
+                        </p>
+                    </article>
+
+                    <article class="achievement-card glass" data-aos="fade-up" data-aos-delay="100">
+                        <span class="achievement-card__icon"><i class="fa-solid fa-trophy"></i></span>
+                        <h3 class="achievement-card__title">Hackathons <span class="todo-tag">TODO</span></h3>
+                        <p class="achievement-card__desc">
+                            TODO — Add hackathon participations, your team, what you built, and any
+                            placement or recognition you earned.
+                        </p>
+                    </article>
+
+                    <article class="achievement-card glass" data-aos="fade-up" data-aos-delay="200">
+                        <span class="achievement-card__icon"><i class="fa-solid fa-medal"></i></span>
+                        <h3 class="achievement-card__title">Coding Contests <span class="todo-tag">TODO</span></h3>
+                        <p class="achievement-card__desc">
+                            TODO — Add coding contest achievements, ratings, or ranks from LeetCode,
+                            Codeforces, CodeChef, etc.
+                        </p>
+                    </article>
+                </div>
+                <!-- END ACHIEVEMENTS -->
+            </div>
+        </section>
+
+        <!-- ============ CONTACT SECTION ============ -->
+        <section class="contact section" id="contact">
+            <div class="container">
+                <div class="section__head" data-aos="fade-up">
+                    <span class="section__tag">07 — Let's Connect</span>
+                    <h2 class="section__title gradient-text">Get In Touch</h2>
+                </div>
+
+                <div class="contact__grid">
+                    <!-- Left: intro + info cards -->
+                    <div class="contact__info" data-aos="fade-right">
+                        <p class="contact__lead">
+                            I'm always open to new opportunities, collaborations, and interesting
+                            conversations. Whether it's an internship, a project idea, or just a
+                            chat about tech — feel free to reach out!
+                        </p>
+
+                        <div class="contact__cards">
+                            <a href="mailto:thekeshabpadhan@gmail.com" class="contact-card glass"
+                                data-copy="thekeshabpadhan@gmail.com">
+                                <span class="contact-card__icon"><i class="fa-solid fa-envelope"></i></span>
+                                <span class="contact-card__info">
+                                    <span class="contact-card__label">Email <i
+                                            class="fa-regular fa-copy contact-card__copy" title="Copy email"></i></span>
+                                    <span class="contact-card__value">thekeshabpadhan@gmail.com</span>
+                                </span>
+                            </a>
+                            <a href="https://github.com/keshabpadhan" class="contact-card glass" target="_blank"
+                                rel="noopener noreferrer">
+                                <span class="contact-card__icon"><i class="fa-brands fa-github"></i></span>
+                                <span class="contact-card__info">
+                                    <span class="contact-card__label">GitHub</span>
+                                    <span class="contact-card__value">github.com/keshabpadhan</span>
+                                </span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/keshabpadhan/" class="contact-card glass"
+                                target="_blank" rel="noopener noreferrer">
+                                <span class="contact-card__icon"><i class="fa-brands fa-linkedin-in"></i></span>
+                                <span class="contact-card__info">
+                                    <span class="contact-card__label">LinkedIn</span>
+                                    <span class="contact-card__value">linkedin.com/in/keshabpadhan</span>
+                                </span>
+                            </a>
+                            <a href="https://leetcode.com/u/keshabpadhan/" class="contact-card glass" target="_blank"
+                                rel="noopener noreferrer">
+                                <span class="contact-card__icon"><i class="fa-solid fa-code"></i></span>
+                                <span class="contact-card__info">
+                                    <span class="contact-card__label">LeetCode</span>
+                                    <span class="contact-card__value">leetcode.com/u/keshabpadhan</span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: contact form -->
+                    <!-- CONNECT FORMSPREE HERE LATER:
+                         1. Create a form at https://formspree.io
+                         2. Replace the form's action with your Formspree endpoint, e.g.
+                            <form action="https://formspree.io/f/yourID" method="POST">
+                         3. Remove the mailto fallback in script.js if you use Formspree. -->
+                    <form class="contact__form glass" id="contactForm" data-aos="fade-left" novalidate
+                        action="mailto:thekeshabpadhan@gmail.com" method="POST" enctype="text/plain">
+                        <div class="form__group">
+                            <label for="name" class="form__label">Name</label>
+                            <input type="text" id="name" name="name" class="form__input" placeholder="Your name"
+                                autocomplete="name" />
+                            <span class="form__error" data-error-for="name"></span>
+                        </div>
+                        <div class="form__group">
+                            <label for="email" class="form__label">Email</label>
+                            <input type="email" id="email" name="email" class="form__input"
+                                placeholder="you@example.com" autocomplete="email" />
+                            <span class="form__error" data-error-for="email"></span>
+                        </div>
+                        <div class="form__group">
+                            <label for="subject" class="form__label">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form__input"
+                                placeholder="What's this about?" />
+                            <span class="form__error" data-error-for="subject"></span>
+                        </div>
+                        <div class="form__group">
+                            <label for="message" class="form__label">Message</label>
+                            <textarea id="message" name="message" class="form__input form__textarea" rows="5"
+                                placeholder="Write your message..."></textarea>
+                            <span class="form__error" data-error-for="message"></span>
+                        </div>
+                        <button type="submit" class="btn btn--primary form__submit">
+                            <i class="fa-solid fa-paper-plane"></i> Send Message
+                        </button>
+                        <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+        <div class="container footer__inner">
+            <a href="#home" class="footer__logo">
+                <span class="nav__logo-bracket">&lt;</span>KP<span class="nav__logo-bracket">/&gt;</span>
+            </a>
+            <p class="footer__built">
+                Designed &amp; Built with <i class="fa-solid fa-heart footer__heart"></i> by
+                <strong>Keshab Padhan</strong>
+            </p>
+            <div class="footer__socials">
+                <a href="https://github.com/keshabpadhan" class="social-icon" target="_blank" rel="noopener noreferrer"
+                    aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/keshabpadhan/" class="social-icon" target="_blank"
+                    rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://leetcode.com/u/keshabpadhan/" class="social-icon" target="_blank"
+                    rel="noopener noreferrer" aria-label="LeetCode"><i class="fa-solid fa-code"></i></a>
+                <a href="mailto:thekeshabpadhan@gmail.com" class="social-icon" aria-label="Email"><i
+                        class="fa-solid fa-envelope"></i></a>
+            </div>
+            <p class="footer__copy">© 2025 Keshab Padhan. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ============ BACK TO TOP BUTTON ============ -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- ============ COPY TOAST ============ -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- ============ SCRIPTS ============ -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="script.js?v=6"></script>
+</body>
+
+</html>
