@@ -1,184 +1,53 @@
-# Keshab Padhan — Developer Portfolio
+# Hi, I'm Keshab Padhan
 
-A stunning, production-ready personal portfolio website built with **pure HTML5, CSS3, and vanilla JavaScript** — no frameworks.
+Welcome to the source code for my personal portfolio website. I built this from scratch with some assistance from AI to help structure the code, refine the styling, and optimize performance. My goal was to create a clean, recruiter-ready portfolio that showcases my journey, projects, and skills as a developer.
 
-Dark, modern, glassmorphism-styled, fully responsive, and recruiter-ready.
-
-> **Live sections:** Home · About · Skills · Projects · Education · Coding Profiles · Achievements · Contact
+Live site: https://keshabpadhan.github.io/
 
 ---
 
-## ✨ Features
+## Technical Details
 
-- 🎨 Dark theme with cyan/purple neon accents & animated gradient background
-- 🧊 Glassmorphism cards with glowing hover borders
-- ⌨️ Typed.js typing effect in the hero
-- 🪄 AOS.js scroll-reveal animations
-- 🧭 Sticky navbar with blur-on-scroll + active-link scroll spy
-- 📱 Fully responsive (mobile-first) with a hamburger menu
-- 📊 Scroll progress bar + back-to-top button
-- 📋 Copy-email-to-clipboard
-- ✅ Contact form with custom JavaScript validation (+ `mailto:` fallback)
-- ♿ Semantic HTML, ARIA labels, keyboard focus styles, `prefers-reduced-motion` support
+I chose to keep the stack lightweight and fast without relying on heavy frontend frameworks. The site is built with:
+
+* **Core**: Pure HTML5, CSS3, and vanilla JavaScript.
+* **Design**: A dark, AMOLED-friendly aesthetic with glassmorphism effects and neon color accents.
+* **Animations**: Custom CSS transitions, Typed.js for the hero text, and AOS.js for scroll-reveal animations.
+* **Responsiveness**: Mobile-first media queries to ensure a seamless experience on phones and tablets.
+* **Performance**: Optimized for speed with minimal dependencies and semantic HTML for accessibility.
 
 ---
 
-## 📁 File Structure
+## Customize This Template
 
-```
-portfolio/
-├── index.html      # Markup — all sections
-├── style.css       # All styles (design tokens, layout, animations, responsive)
-├── script.js       # All behavior (typed, AOS, nav, form, scroll features)
-├── README.md
-└── assets/
-    ├── images/
-    │   └── avatar-placeholder.png    (optional — add your photo)
-    └── resume/
-        └── keshab-padhan-resume.pdf  (add your resume)
-```
+If you like the design and want to adapt it for your own portfolio, you are welcome to use it.
 
----
+### Run it locally
+Since it's plain HTML/CSS/JS, there is no build step required. Simply open `index.html` in your browser, or use the Live Server extension in VS Code.
 
-## 🚀 Run Locally
-
-No build step needed — it's plain HTML/CSS/JS.
-
-**Option 1 — Just open it**
-
-Double-click `index.html`, or drag it into your browser.
-
-**Option 2 — Local server (recommended, avoids any CDN/CORS quirks)**
-
-```bash
-# Python 3
-python -m http.server 5500
-
-# or Node (if you have it)
-npx serve .
-```
-
-Then open <http://localhost:5500>.
-
-**Option 3 — VS Code**
-
-Install the **Live Server** extension → right-click `index.html` → *Open with Live Server*.
+### Make it yours
+Search for `TODO` in the codebase. I've left helpful comments to guide you on what to change:
+* **Projects**: Update `index.html` with your actual projects, links, and tags.
+* **Resume**: Drop your resume PDF into the `assets/resume/` folder and name it `keshab-padhan-resume.pdf`.
+* **Profile Photo**: Replace the initial placeholder with your own photo in `assets/images/`.
+* **Skills & Education**: Adjust the skills, education timeline, and achievements to reflect your own story.
 
 ---
 
-## 🛠️ Customize
+## Deployment
 
-Everything you need to personalize is clearly marked with `TODO` comments. Search the project for `TODO` to find each spot.
-
-### 1. Add your real projects
-
-Open `index.html` and find:
-
-```html
-<!-- REPLACE THIS WITH YOUR REAL PROJECTS -->
-```
-
-Each project is a `<article class="project-card ...">`. For every card, update:
-
-- **Title** — `project-card__title`
-- **Description** — `project-card__desc`
-- **Tech tags** — the `<span class="tag">` items
-- **Links** — the GitHub `href` and the Live Demo `href` (remove the demo button if there's no live site)
-
-Duplicate a card to add more; delete cards you don't need.
-
-### 2. Add your resume PDF
-
-Put your resume at:
-
-```
-assets/resume/keshab-padhan-resume.pdf
-```
-
-The **Download Resume** buttons (Hero + About) already point there. If you use a different filename, update the two `href="assets/resume/..."` links in `index.html`.
-
-### 3. Add a profile photo (optional)
-
-The site uses stylized **KP** initials by default. To use a photo, drop it in `assets/images/` and follow the instructions in `assets/images/README.txt`.
-
-### 4. Update skills / education / achievements
-
-- **Skills:** In the Skills section, remove any `pill--todo` badges for tech you haven't learned yet (React, Node, MongoDB, etc.). Remove the `<span class="todo-tag">TODO</span>` markers once confirmed.
-- **Education:** Confirm your years and add your GPA (marked `TODO`). Fill in or remove the school card.
-- **Achievements:** Replace the placeholder cards under `<!-- ADD YOUR REAL ACHIEVEMENTS HERE -->`.
+Deploying is straightforward. You can host this for free in just a few clicks using GitHub Pages, Netlify, or Vercel by pushing the code to your repository.
 
 ---
 
-## 📬 Connect the Contact Form (Formspree)
+## Credits & Tools
 
-By default the form uses a **`mailto:` fallback** — clicking *Send* opens the visitor's email app pre-filled. To collect submissions directly instead:
-
-1. Create a free form at **<https://formspree.io>** and copy your endpoint (e.g. `https://formspree.io/f/abcdwxyz`).
-2. In `index.html`, find the contact form and set its action:
-
-   ```html
-   <form class="contact__form" id="contactForm" action="https://formspree.io/f/abcdwxyz" method="POST">
-   ```
-
-3. In `script.js`, inside `initContactForm()`, replace the `mailto:` block (look for the `--- Submission ---` comment) with a `fetch()` POST:
-
-   ```js
-   const res = await fetch(form.action, {
-       method: "POST",
-       body: new FormData(form),
-       headers: { Accept: "application/json" },
-   });
-   if (res.ok) {
-       status.textContent = "✓ Message sent — thank you!";
-       status.className = "form__status success";
-       form.reset();
-   } else {
-       status.textContent = "Something went wrong. Please email me directly.";
-       status.className = "form__status error";
-   }
-   ```
-
-   (Make the submit handler `async` to use `await`.)
+A quick note on some of the external tools used to bring this site to life:
+* [Font Awesome](https://fontawesome.com/) for the icons.
+* [Google Fonts](https://fonts.google.com/) (Space Grotesk, Inter, JetBrains Mono) for typography.
+* [AOS.js](https://michalsnik.github.io/aos/) for smooth scroll animations.
+* [Typed.js](https://github.com/mattboldt/typed.js/) for the typing effect.
 
 ---
 
-## 🌐 Deploy
-
-### GitHub Pages
-
-1. Create a repo (e.g. `portfolio`) and push these files.
-2. Repo → **Settings → Pages**.
-3. **Source:** *Deploy from a branch* → **Branch:** `main` → **Folder:** `/ (root)` → **Save**.
-4. Your site goes live at `https://<your-username>.github.io/<repo>/`.
-
-> Tip: name the repo `<your-username>.github.io` to host it at the root URL.
-
-### Netlify
-
-1. Go to <https://app.netlify.com> → **Add new site → Deploy manually**.
-2. Drag-and-drop the whole `portfolio/` folder.
-3. Done — Netlify gives you a live URL (rename it in *Site settings*).
-
-Alternatively, connect your GitHub repo for automatic deploys on every push. (**Vercel** works the same way.)
-
----
-
-## 🔗 CDNs Used
-
-- [Font Awesome 6](https://fontawesome.com/) — icons
-- [Google Fonts](https://fonts.google.com/) — Space Grotesk, Inter, JetBrains Mono
-- [AOS](https://michalsnik.github.io/aos/) — scroll animations
-- [Typed.js](https://github.com/mattboldt/typed.js/) — hero typing effect
-
-All are loaded via CDN — an internet connection is required for icons, fonts, and animations to appear.
-
----
-
-## 📄 License
-
-© 2025 Keshab Padhan. All rights reserved.
-Feel free to use this as inspiration for your own portfolio.
-
----
-
-**Designed & built with ❤️ by Keshab Padhan**
+**Designed & built with 💛 by Keshab Padhan**
