@@ -89,6 +89,7 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: var(--nav-height);
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -2558,6 +2559,10 @@ html {
 
 /* Mobile: hamburger menu */
 @media (max-width: 768px) {
+   .bg-glow {
+        display: none; /* Hide heavy blur background glows on mobile to prevent GPU rendering lag/crashes */
+    }
+
     .nav__toggle {
         display: flex;
     }
