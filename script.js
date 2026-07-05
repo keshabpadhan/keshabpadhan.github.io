@@ -50,7 +50,7 @@
             easing: "ease-out-cubic",
             once: true,
             offset: 60,
-            disable: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+            disable: window.matchMedia("(prefers-reduced-motion: reduce)").matches || window.innerWidth < 768,
         });
     }
 
