@@ -1,33 +1,14 @@
-/* =============================================================
-   Keshab Padhan — Portfolio
-   script.js  (Vanilla JS, no jQuery)
-
-   Features:
-     1.  AOS init (scroll reveal)
-     2.  Typed.js hero typing effect
-     3.  Sticky navbar w/ glassmorphism on scroll
-     4.  Active nav link highlight on scroll (scroll spy)
-     5.  Hamburger mobile menu toggle
-     6.  Smooth scroll for nav links & buttons
-     7.  Scroll progress bar
-     8.  Back-to-top button
-     9.  Contact form validation + success message (+ mailto fallback)
-     10. Copy email to clipboard
-   ============================================================= */
-
 (function () {
     "use strict";
 
-    /* ------------------------------------------------------------
-       Helpers
-    ------------------------------------------------------------ */
     const $ = (sel, ctx = document) => ctx.querySelector(sel);
     const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
     document.addEventListener("DOMContentLoaded", init);
 
     function init() {
-        initAOS();
+        initParticles();
+        initHeroAnimations();
         initTyped();
         initNavbarScroll();
         initScrollSpy();
@@ -38,30 +19,105 @@
         initContactForm();
         initCopyEmail();
         initDashboardStats();
+        initTiltCards();
+        initScrollReveal();
+        initCounterAnimation();
     }
 
-    /* ------------------------------------------------------------
-       1. AOS — Animate On Scroll
-    ------------------------------------------------------------ */
-    function initAOS() {
-        if (typeof AOS === "undefined") return;
-        AOS.init({
-            duration: 700,
-            easing: "ease-out-cubic",
-            once: true,
-            offset: 60,
-            disable: window.matchMedia("(prefers-reduced-motion: reduce)").matches || window.innerWidth < 768,
+    function initParticles() {
+        const canvas = document.getElementById("particleCanvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        let particles = [];
+        let w, h;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        const count = Math.min(80, Math.floor(w * h / 12000));
+        const goldRgb = "255, 209, 0";
+
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                r: Math.random() * 2 + 1,
+                alpha: Math.random() * 0.4 + 0.1,
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach((p) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0) p.x = w;
+                if (p.x > w) p.x = 0;
+                if (p.y < 0) p.y = h;
+                if (p.y > h) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${goldRgb}, ${p.alpha})`;
+                ctx.fill();
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(${goldRgb}, ${0.06 * (1 - dist / 120)})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    }
+
+    function initHeroAnimations() {
+        if (typeof gsap === "undefined") return;
+
+        const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+        tl.from("#heroGreeting", { y: 40, opacity: 0, duration: 0.6 })
+            .from("#heroName", { y: 50, opacity: 0, duration: 0.7 }, "-=0.3")
+            .from("#heroTyped", { y: 40, opacity: 0, duration: 0.6 }, "-=0.3")
+            .from("#heroBio", { y: 30, opacity: 0, duration: 0.6 }, "-=0.3")
+            .from("#heroCta .btn", { y: 30, opacity: 0, duration: 0.5, stagger: 0.12 }, "-=0.3")
+            .from("#heroSocials .social-icon", { y: 20, opacity: 0, duration: 0.4, stagger: 0.08 }, "-=0.2")
+            .from("#heroVisual", { scale: 0.6, opacity: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.6");
+
+        gsap.to(".shape", {
+            y: "random(-20, 20)",
+            x: "random(-20, 20)",
+            rotation: "random(-15, 15)",
+            duration: "random(6, 10)",
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            stagger: 0.3,
         });
     }
 
-    /* ------------------------------------------------------------
-       2. Typed.js — hero typing effect
-    ------------------------------------------------------------ */
     function initTyped() {
         const el = $("#typed");
         if (!el || typeof Typed === "undefined") return;
 
-        // eslint-disable-next-line no-new
         new Typed("#typed", {
             strings: [
                 "2nd Year BTech CS Student",
@@ -79,9 +135,6 @@
         });
     }
 
-    /* ------------------------------------------------------------
-       3. Sticky navbar glassmorphism on scroll
-    ------------------------------------------------------------ */
     function initNavbarScroll() {
         const navbar = $("#navbar");
         if (!navbar) return;
@@ -93,14 +146,10 @@
         window.addEventListener("scroll", onScroll, { passive: true });
     }
 
-    /* ------------------------------------------------------------
-       4. Scroll spy — active nav link highlight
-    ------------------------------------------------------------ */
     function initScrollSpy() {
         const links = $$(".nav__link");
         if (!links.length) return;
 
-        // Map: section id -> nav link
         const linkById = new Map();
         links.forEach((link) => {
             const id = link.getAttribute("href").replace("#", "");
@@ -116,7 +165,6 @@
             if (activeLink) activeLink.classList.add("active");
         };
 
-        // IntersectionObserver picks the section currently near the top
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
@@ -126,7 +174,6 @@
                 });
             },
             {
-                // Trigger when a section crosses the upper third of the viewport
                 rootMargin: "-45% 0px -50% 0px",
                 threshold: 0,
             }
@@ -135,9 +182,6 @@
         sections.forEach((section) => observer.observe(section));
     }
 
-    /* ------------------------------------------------------------
-       5. Hamburger mobile menu
-    ------------------------------------------------------------ */
     function initMobileMenu() {
         const toggle = $("#navToggle");
         const menu = $("#navMenu");
@@ -163,17 +207,14 @@
             menu.classList.contains("open") ? closeMenu() : openMenu();
         });
 
-        // Close after clicking a link
         $$(".nav__link", menu).forEach((link) => {
             link.addEventListener("click", closeMenu);
         });
 
-        // Close on Escape
         document.addEventListener("keydown", (e) => {
             if (e.key === "Escape" && menu.classList.contains("open")) closeMenu();
         });
 
-        // Close when clicking outside the menu
         document.addEventListener("click", (e) => {
             if (
                 menu.classList.contains("open") &&
@@ -184,16 +225,11 @@
             }
         });
 
-        // Reset when resizing up to desktop
         window.addEventListener("resize", () => {
             if (window.innerWidth > 768) closeMenu();
         });
     }
 
-    /* ------------------------------------------------------------
-       6. Smooth scroll for in-page anchors
-       (native CSS handles most; JS keeps it robust + offsets nav)
-    ------------------------------------------------------------ */
     function initSmoothScroll() {
         $$('a[href^="#"]').forEach((anchor) => {
             const href = anchor.getAttribute("href");
@@ -204,15 +240,11 @@
                 if (!target) return;
                 e.preventDefault();
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
-                // Update the hash without an extra jump
                 history.pushState(null, "", href);
             });
         });
     }
 
-    /* ------------------------------------------------------------
-       7. Scroll progress bar
-    ------------------------------------------------------------ */
     function initScrollProgress() {
         const bar = $("#scrollProgress");
         if (!bar) return;
@@ -228,9 +260,6 @@
         window.addEventListener("resize", update);
     }
 
-    /* ------------------------------------------------------------
-       8. Back-to-top button
-    ------------------------------------------------------------ */
     function initBackToTop() {
         const btn = $("#backToTop");
         if (!btn) return;
@@ -246,9 +275,6 @@
         });
     }
 
-    /* ------------------------------------------------------------
-       9. Contact form validation
-    ------------------------------------------------------------ */
     function initContactForm() {
         const form = $("#contactForm");
         if (!form) return;
@@ -273,28 +299,18 @@
 
         const validators = {
             name: (v) =>
-                v.trim().length === 0
-                    ? "Please enter your name."
-                    : v.trim().length < 2
-                    ? "Name is too short."
-                    : "",
+                v.trim().length === 0 ? "Please enter your name."
+                    : v.trim().length < 2 ? "Name is too short." : "",
             email: (v) =>
-                v.trim().length === 0
-                    ? "Please enter your email."
-                    : !emailRe.test(v.trim())
-                    ? "Please enter a valid email address."
-                    : "",
+                v.trim().length === 0 ? "Please enter your email."
+                    : !emailRe.test(v.trim()) ? "Please enter a valid email address." : "",
             subject: (v) =>
                 v.trim().length === 0 ? "Please add a subject." : "",
             message: (v) =>
-                v.trim().length === 0
-                    ? "Please write a message."
-                    : v.trim().length < 10
-                    ? "Message should be at least 10 characters."
-                    : "",
+                v.trim().length === 0 ? "Please write a message."
+                    : v.trim().length < 10 ? "Message should be at least 10 characters." : "",
         };
 
-        // Live validation once a field has been touched
         Object.entries(fields).forEach(([key, field]) => {
             if (!field) return;
             field.addEventListener("blur", () => setError(field, validators[key](field.value)));
@@ -328,19 +344,6 @@
                 return;
             }
 
-            /* --- Submission ---
-               No backend is connected yet, so we open the user's mail client
-               with the message prefilled (mailto fallback).
-
-               TO USE FORMSPREE INSTEAD:
-                 1. Set the form's action to your Formspree endpoint in index.html.
-                 2. Replace this block with a fetch() POST to form.action, e.g.:
-                    const res = await fetch(form.action, {
-                        method: "POST",
-                        body: new FormData(form),
-                        headers: { Accept: "application/json" },
-                    });
-            */
             const name = encodeURIComponent(fields.name.value.trim());
             const email = encodeURIComponent(fields.email.value.trim());
             const subject = encodeURIComponent(fields.subject.value.trim());
@@ -358,7 +361,6 @@
             form.reset();
             showToast('<i class="fa-solid fa-circle-check"></i> Message ready to send!');
 
-            // Clear the status message after a while
             window.setTimeout(() => {
                 if (status) {
                     status.textContent = "";
@@ -368,9 +370,6 @@
         });
     }
 
-    /* ------------------------------------------------------------
-       10. Copy email to clipboard
-    ------------------------------------------------------------ */
     function initCopyEmail() {
         const cards = $$("[data-copy]");
         if (!cards.length) return;
@@ -380,8 +379,6 @@
             const value = card.getAttribute("data-copy");
 
             const doCopy = (e) => {
-                // Only intercept when the copy icon itself is clicked,
-                // so the mailto link still works normally.
                 if (!copyIcon || !copyIcon.contains(e.target)) return;
                 e.preventDefault();
                 copyToClipboard(value);
@@ -418,9 +415,6 @@
         document.body.removeChild(ta);
     }
 
-    /* ------------------------------------------------------------
-       Toast helper
-    ------------------------------------------------------------ */
     let toastTimer = null;
     function showToast(html) {
         const toast = $("#toast");
@@ -431,21 +425,198 @@
         toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2600);
     }
 
-    /* ------------------------------------------------------------
-       Dashboard Stats (GitHub & LeetCode)
-    ------------------------------------------------------------ */
+    function initTiltCards() {
+        const cards = $$("[data-tilt]");
+        if (!cards.length) return;
+
+        cards.forEach((card) => {
+            card.addEventListener("mousemove", (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / centerY * -8;
+                const rotateY = (x - centerX) / centerX * 8;
+                card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+            });
+
+            card.addEventListener("mouseleave", () => {
+                card.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)";
+                card.style.transition = "transform 0.5s ease";
+                setTimeout(() => { card.style.transition = ""; }, 500);
+            });
+        });
+    }
+
+    function initScrollReveal() {
+        if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        const revealItems = $$(".reveal");
+        revealItems.forEach((el) => {
+            gsap.from(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 85%",
+                    toggleActions: "play none none none",
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.7,
+                ease: "power3.out",
+            });
+        });
+
+        const sectionHeads = $$(".section__head");
+        sectionHeads.forEach((head) => {
+            gsap.from(head, {
+                scrollTrigger: {
+                    trigger: head,
+                    start: "top 85%",
+                    toggleActions: "play none none none",
+                },
+                y: 40,
+                opacity: 0,
+                duration: 0.6,
+                ease: "power2.out",
+            });
+        });
+
+        const skillCards = $$(".skills__card");
+        skillCards.forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 88%",
+                    toggleActions: "play none none none",
+                },
+                y: 60,
+                opacity: 0,
+                duration: 0.5,
+                delay: i * 0.08,
+                ease: "back.out(1.4)",
+            });
+        });
+
+        const projectCards = $$(".project-card");
+        projectCards.forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 85%",
+                    toggleActions: "play none none none",
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: "back.out(1.4)",
+            });
+        });
+
+        const timelineItems = $$(".timeline__item");
+        timelineItems.forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 85%",
+                    toggleActions: "play none none none",
+                },
+                x: -40,
+                opacity: 0,
+                duration: 0.6,
+                delay: i * 0.15,
+                ease: "power3.out",
+            });
+        });
+
+        const codingCards = $$(".coding-card");
+        codingCards.forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 88%",
+                    toggleActions: "play none none none",
+                },
+                y: 40,
+                opacity: 0,
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: "back.out(1.4)",
+            });
+        });
+
+        const achievementCards = $$(".achievement-card");
+        achievementCards.forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 88%",
+                    toggleActions: "play none none none",
+                },
+                y: 40,
+                opacity: 0,
+                scale: 0.95,
+                duration: 0.5,
+                delay: i * 0.1,
+                ease: "back.out(1.4)",
+            });
+        });
+
+        gsap.utils.toArray(".about__info-item").forEach((item, i) => {
+            gsap.from(item, {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 88%",
+                    toggleActions: "play none none none",
+                },
+                y: 30,
+                opacity: 0,
+                duration: 0.4,
+                delay: i * 0.06,
+                ease: "power2.out",
+            });
+        });
+    }
+
+    function initCounterAnimation() {
+        if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
+
+        const counters = $$(".counter-num[data-target]");
+        counters.forEach((el) => {
+            const target = parseInt(el.getAttribute("data-target"), 10);
+            if (target <= 0) return;
+
+            ScrollTrigger.create({
+                trigger: el,
+                start: "top 85%",
+                onEnter: () => {
+                    gsap.to(el, {
+                        duration: 1.5,
+                        ease: "power2.out",
+                        innerHTML: target,
+                        snap: { innerHTML: 1 },
+                        modifiers: {
+                            innerHTML: (val) => Math.round(parseFloat(val)).toString(),
+                        },
+                    });
+                },
+                once: true,
+            });
+        });
+    }
+
     async function initDashboardStats() {
         const githubUsername = "keshabpadhan";
         const leetcodeUsername = "keshabpadhan";
 
-        // Elements
         const githubTotalEl = document.getElementById("github-total-contributions");
         const leetcodeSolvedEl = document.getElementById("leetcode-solved-count");
         const leetcodeStreakEl = document.getElementById("leetcode-streak-count");
         const leetcodeDatesEl = document.getElementById("leetcode-streak-dates");
-        const leetcodeProgressEl = document.getElementById("leetcode-streak-progress");
 
-        // Calendar Elements
         const calendarMonthsEl = document.getElementById("github-calendar-months");
         const calendarDaysEl = document.getElementById("github-calendar-days");
         const scrollContainer = document.getElementById("github-calendar-scroll");
@@ -454,7 +625,6 @@
         const prevBtn = document.getElementById("github-prev-btn");
         const nextBtn = document.getElementById("github-next-btn");
 
-        // 1. Fetch GitHub Contributions
         try {
             const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${githubUsername}`);
             if (response.ok) {
@@ -474,18 +644,18 @@
 
         function renderCalendar(contributionsList) {
             if (!calendarMonthsEl || !calendarDaysEl) return;
-            
+
             calendarMonthsEl.innerHTML = "";
             calendarDaysEl.innerHTML = "";
-            
+
             const contributionMap = new Map();
             let total = 0;
             const today = new Date();
             today.setHours(23, 59, 59, 999);
-            
+
             const oneYearAgo = new Date(today);
             oneYearAgo.setDate(today.getDate() - 365);
-            
+
             contributionsList.forEach(item => {
                 contributionMap.set(item.date, item);
                 const itemDate = new Date(item.date);
@@ -493,42 +663,38 @@
                     total += item.count;
                 }
             });
-            
-            // Set total text
+
             if (githubTotalEl) {
                 githubTotalEl.textContent = `${total} contribution${total === 1 ? "" : "s"} in the last year`;
             }
-            
-            // Align calendar grid columns to start on Sunday of the week that contains oneYearAgo
+
             const startSunday = new Date(oneYearAgo);
             startSunday.setDate(oneYearAgo.getDate() - oneYearAgo.getDay());
             startSunday.setHours(0, 0, 0, 0);
-            
+
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             const monthCols = [];
             let lastMonth = -1;
-            
+
             let currentDate = new Date(startSunday);
             let dayOfWeek = 0;
             let currentWeekIndex = 0;
-            
+
             let daysHtml = "";
-            
+
             const getYYYYMMDD = (d) => {
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
                 const dateVal = String(d.getDate()).padStart(2, '0');
                 return `${year}-${month}-${dateVal}`;
             };
-            
-            // We loop until currentDate exceeds today
+
             while (currentDate <= today) {
                 const dateString = getYYYYMMDD(currentDate);
                 const contrib = contributionMap.get(dateString) || { count: 0, level: 0 };
-                
+
                 daysHtml += `<div class="github-day-cell level-${contrib.level}" title="${contrib.count} contribution${contrib.count === 1 ? "" : "s"} on ${dateString}"></div>`;
-                
-                // Track months
+
                 const m = currentDate.getMonth();
                 if (m !== lastMonth) {
                     if (currentDate.getDate() <= 7 || lastMonth === -1) {
@@ -539,7 +705,7 @@
                         lastMonth = m;
                     }
                 }
-                
+
                 dayOfWeek++;
                 if (dayOfWeek === 7) {
                     dayOfWeek = 0;
@@ -547,24 +713,20 @@
                 }
                 currentDate.setDate(currentDate.getDate() + 1);
             }
-            
-            // Insert day cells
+
             calendarDaysEl.innerHTML = daysHtml;
-            
-            // Set exact column count for the grid template columns
+
             const totalCols = currentWeekIndex + (dayOfWeek > 0 ? 1 : 0);
             calendarMonthsEl.style.gridTemplateColumns = `repeat(${totalCols}, 11px)`;
             calendarDaysEl.style.gridTemplateColumns = `repeat(${totalCols}, 11px)`;
             calendarDaysEl.style.gridAutoColumns = "11px";
-            
-            // Insert month labels
+
             let monthsHtml = "";
             monthCols.forEach(m => {
                 monthsHtml += `<span style="grid-column: ${m.col}">${m.name}</span>`;
             });
             calendarMonthsEl.innerHTML = monthsHtml;
-            
-            // Initialize slider
+
             initSlider();
         }
 
@@ -573,25 +735,20 @@
             const today = new Date();
             const start = new Date(today);
             start.setDate(today.getDate() - 370);
-            
+
             const getYYYYMMDD = (d) => {
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
                 const dateVal = String(d.getDate()).padStart(2, '0');
                 return `${year}-${month}-${dateVal}`;
             };
-            
+
             let cur = new Date(start);
             while (cur <= today) {
-                fallback.push({
-                    date: getYYYYMMDD(cur),
-                    count: 0,
-                    level: 0
-                });
+                fallback.push({ date: getYYYYMMDD(cur), count: 0, level: 0 });
                 cur.setDate(cur.getDate() + 1);
             }
-            
-            // Add a single contribution in December to match the screenshot layout
+
             const decYear = today.getFullYear() - (today.getMonth() < 11 ? 1 : 0);
             const decDate = new Date(decYear, 11, 15);
             const decStr = getYYYYMMDD(decDate);
@@ -605,33 +762,33 @@
 
         function initSlider() {
             if (!scrollContainer || !sliderThumb || !sliderTrack) return;
-            
+
             function updateSlider() {
                 const { scrollLeft, scrollWidth, clientWidth } = scrollContainer;
                 const scrollableWidth = scrollWidth - clientWidth;
-                
+
                 if (scrollableWidth <= 0) {
                     sliderThumb.style.width = "100%";
                     sliderThumb.style.left = "0px";
                     return;
                 }
-                
+
                 const visibleRatio = clientWidth / scrollWidth;
                 const trackWidth = sliderTrack.clientWidth;
                 const thumbWidth = Math.max(trackWidth * visibleRatio, 30);
                 sliderThumb.style.width = `${thumbWidth}px`;
-                
+
                 const scrollPercent = scrollLeft / scrollableWidth;
                 const maxThumbLeft = trackWidth - thumbWidth;
                 sliderThumb.style.left = `${scrollPercent * maxThumbLeft}px`;
             }
-            
+
             scrollContainer.removeEventListener("scroll", updateSlider);
             scrollContainer.addEventListener("scroll", updateSlider);
-            
+
             window.removeEventListener("resize", updateSlider);
             window.addEventListener("resize", updateSlider);
-            
+
             if (prevBtn) {
                 prevBtn.onclick = () => {
                     scrollContainer.scrollBy({ left: -120, behavior: "smooth" });
@@ -642,11 +799,11 @@
                     scrollContainer.scrollBy({ left: 120, behavior: "smooth" });
                 };
             }
-            
+
             let isDragging = false;
             let startX = 0;
             let startScrollLeft = 0;
-            
+
             sliderThumb.onmousedown = (e) => {
                 isDragging = true;
                 startX = e.clientX;
@@ -655,53 +812,51 @@
                 document.addEventListener("mousemove", onMouseMove);
                 document.addEventListener("mouseup", onMouseUp);
             };
-            
+
             function onMouseMove(e) {
                 if (!isDragging) return;
                 const deltaX = e.clientX - startX;
                 const trackWidth = sliderTrack.clientWidth;
                 const thumbWidth = sliderThumb.clientWidth;
                 const maxThumbLeft = trackWidth - thumbWidth;
-                
+
                 const scrollableWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
                 if (scrollableWidth <= 0) return;
-                
+
                 const ratio = deltaX / maxThumbLeft;
                 scrollContainer.scrollLeft = startScrollLeft + ratio * scrollableWidth;
             }
-            
+
             function onMouseUp() {
                 isDragging = false;
                 document.body.style.userSelect = "";
                 document.removeEventListener("mousemove", onMouseMove);
                 document.removeEventListener("mouseup", onMouseUp);
             }
-            
+
             sliderTrack.onclick = (e) => {
                 if (e.target === sliderThumb) return;
                 const clickX = e.offsetX;
                 const trackWidth = sliderTrack.clientWidth;
                 const thumbWidth = sliderThumb.clientWidth;
                 const scrollPercent = Math.min(Math.max((clickX - thumbWidth / 2) / (trackWidth - thumbWidth), 0), 1);
-                
+
                 const scrollableWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
                 scrollContainer.scrollTo({
                     left: scrollPercent * scrollableWidth,
                     behavior: "smooth"
                 });
             };
-            
+
             updateSlider();
-            
-            // Automatically scroll to the end on load
+
             setTimeout(() => {
                 scrollContainer.scrollLeft = scrollContainer.scrollWidth;
                 updateSlider();
             }, 150);
         }
 
-        // 2. Fetch LeetCode Solved Count
-        let solved = 7; // Static default fallback
+        let solved = 7;
         try {
             const response = await fetch(`https://alfa-leetcode-api.onrender.com/${leetcodeUsername}/solved`);
             if (response.ok) {
@@ -709,6 +864,7 @@
                 solved = data.solvedProblem || solved;
                 if (leetcodeSolvedEl) {
                     leetcodeSolvedEl.textContent = solved;
+                    leetcodeSolvedEl.setAttribute("data-target", solved);
                 }
             } else {
                 throw new Error("Failed to fetch LeetCode solved count");
@@ -717,12 +873,12 @@
             console.warn("LeetCode Solved API error, using default:", err);
             if (leetcodeSolvedEl) {
                 leetcodeSolvedEl.textContent = solved;
+                leetcodeSolvedEl.setAttribute("data-target", solved);
             }
         }
 
-        // 3. Fetch LeetCode Streak / Active days
-        let streak = 3; // Static default fallback
-        let activeDays = 5; // Static default fallback
+        let streak = 3;
+        let activeDays = 5;
         try {
             const response = await fetch(`https://alfa-leetcode-api.onrender.com/${leetcodeUsername}/calendar`);
             if (response.ok) {
@@ -730,31 +886,21 @@
                 streak = data.streak !== undefined ? data.streak : streak;
                 activeDays = data.totalActiveDays !== undefined ? data.totalActiveDays : activeDays;
 
-                if (leetcodeStreakEl) leetcodeStreakEl.textContent = streak;
+                if (leetcodeStreakEl) {
+                    leetcodeStreakEl.textContent = streak;
+                    leetcodeStreakEl.setAttribute("data-target", streak);
+                }
                 if (leetcodeDatesEl) leetcodeDatesEl.textContent = `${activeDays} days active`;
-
-                animateLeetCodeProgress(streak);
             } else {
                 throw new Error("Failed to fetch LeetCode calendar");
             }
         } catch (err) {
             console.warn("LeetCode Calendar API error, using defaults:", err);
-            if (leetcodeStreakEl) leetcodeStreakEl.textContent = streak;
+            if (leetcodeStreakEl) {
+                leetcodeStreakEl.textContent = streak;
+                leetcodeStreakEl.setAttribute("data-target", streak);
+            }
             if (leetcodeDatesEl) leetcodeDatesEl.textContent = `${activeDays} days active`;
-            animateLeetCodeProgress(streak);
-        }
-
-        function animateLeetCodeProgress(streakVal) {
-            if (!leetcodeProgressEl) return;
-            const maxStreak = 7; // Streak of 7 fills the circle
-            const dashArray = 251.2;
-            const percent = Math.min(streakVal / maxStreak, 1);
-            const offset = dashArray * (1 - percent);
-            
-            // Trigger animation after layout
-            setTimeout(() => {
-                leetcodeProgressEl.style.strokeDashoffset = offset;
-            }, 100);
         }
     }
 })();
