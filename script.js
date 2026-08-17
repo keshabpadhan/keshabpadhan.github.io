@@ -7,9 +7,14 @@
     document.addEventListener("DOMContentLoaded", init);
 
     function init() {
+        initTheme();
+        initPreloader();
+        initCursor();
+        initMagnetic();
         initParticles();
         initHeroAnimations();
         initTyped();
+        initMarquee();
         initNavbarScroll();
         initScrollSpy();
         initMobileMenu();
@@ -21,25 +26,220 @@
         initDashboardStats();
         initTiltCards();
         initScrollReveal();
+        initSkillBars();
         initCounterAnimation();
+        initTerminal();
+    }
+
+    /* ==========================================================
+       THEME (light / dark)
+       ========================================================== */
+    function initTheme() {
+        const toggles = $$(".theme-toggle");
+        if (!toggles.length) return;
+
+        const root = document.documentElement;
+
+        const applyIcon = () => {
+            const isDark = root.getAttribute("data-theme") === "dark";
+            toggles.forEach((toggle) => {
+                const icon = $("i", toggle);
+                if (icon) icon.className = isDark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+                toggle.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+            });
+        };
+        applyIcon();
+
+        const setTheme = (theme, animate) => {
+            if (animate) root.classList.add("theme-flip");
+            root.setAttribute("data-theme", theme);
+            try {
+                localStorage.setItem("kp-theme", theme);
+            } catch (e) { /* ignore */ }
+            refreshParticleColors();
+            applyIcon();
+            if (animate) {
+                window.setTimeout(() => root.classList.remove("theme-flip"), 420);
+            }
+        };
+
+        toggles.forEach((toggle) => {
+            toggle.addEventListener("click", () => {
+                const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+                setTheme(next, true);
+            });
+        });
+
+        window.__kpSetTheme = setTheme;
+        window.__kpGetTheme = () => root.getAttribute("data-theme") || "light";
+    }
+
+    /* ==========================================================
+       PRELOADER
+       ========================================================== */
+    function initPreloader() {
+        const preloader = $("#preloader");
+        const counterEl = $("#preloaderCounter");
+        const bar = $("#preloaderBar");
+        const wordEl = $("#preloaderWord");
+        if (!preloader) return;
+
+        const words = ["loading", "compiling", "hacking", "polishing", "ready"];
+        let progress = 0;
+        let finished = false;
+
+        const finish = () => {
+            if (finished) return;
+            finished = true;
+            if (wordEl) wordEl.textContent = "ready";
+            preloader.classList.add("hidden");
+            setTimeout(() => {
+                preloader.style.display = "none";
+            }, 700);
+        };
+
+        const tick = () => {
+            progress += Math.random() * 14 + 6;
+            if (progress >= 100) progress = 100;
+            const pct = Math.floor(progress);
+            if (counterEl) counterEl.textContent = pct;
+            if (bar) bar.style.width = pct + "%";
+            if (wordEl && pct < 100) {
+                wordEl.textContent = words[Math.min(words.length - 2, Math.floor(pct / 26))];
+            }
+            if (progress < 100) {
+                setTimeout(tick, 100);
+            } else {
+                finish();
+            }
+        };
+
+        if (window.performance && performance.timing) {
+            const onLoad = () => {
+                setTimeout(() => {
+                    if (!finished) finish();
+                }, 300);
+            };
+            if (document.readyState === "complete") onLoad();
+            else window.addEventListener("load", onLoad, { once: true });
+        } else {
+            setTimeout(finish, 200);
+        }
+
+        tick();
+        setTimeout(finish, 4000);
+    }
+
+    /* ==========================================================
+       CUSTOM CURSOR
+       ========================================================== */
+    function initCursor() {
+        const cursor = $("#cursor");
+        if (!cursor) return;
+        if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+        let x = -100, y = -100;
+        let cx = -100, cy = -100;
+        let isDown = false;
+
+        window.addEventListener("mousemove", (e) => {
+            x = e.clientX;
+            y = e.clientY;
+        });
+
+        window.addEventListener("mousedown", () => {
+            isDown = true;
+            cursor.classList.add("cursor--down");
+        });
+        window.addEventListener("mouseup", () => {
+            isDown = false;
+            cursor.classList.remove("cursor--down");
+        });
+
+        const loop = () => {
+            cx += (x - cx) * 0.25;
+            cy += (y - cy) * 0.25;
+            cursor.style.left = cx + "px";
+            cursor.style.top = cy + "px";
+            requestAnimationFrame(loop);
+        };
+        loop();
+
+        const interactive = "a, button, input, textarea, [data-tilt], .social-icon, .nav__toggle, .tag";
+        document.addEventListener("mouseover", (e) => {
+            if (e.target.closest(interactive)) cursor.classList.add("cursor--hover");
+        });
+        document.addEventListener("mouseout", (e) => {
+            if (e.target.closest(interactive)) cursor.classList.remove("cursor--hover");
+        });
+
+        document.documentElement.style.cursor = "none";
+    }
+
+    /* ==========================================================
+       MAGNETIC ELEMENTS
+       ========================================================== */
+    function initMagnetic() {
+        const els = $$("[data-magnetic]:not(.social-icon)");
+        if (!els.length) return;
+        if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+
+        els.forEach((el) => {
+            el.addEventListener("mousemove", (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                el.style.transition = "transform 0.15s ease-out";
+                el.style.transform = `translate(${x * 0.2}px, ${y * 0.3}px)`;
+            });
+            el.addEventListener("mouseleave", () => {
+                el.style.transition = "transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)";
+                el.style.transform = "";
+            });
+        });
+    }
+
+    /* ==========================================================
+       PARTICLES (constellation)
+       ========================================================== */
+    let particleCtx = null;
+    let particleList = [];
+    let particleColors = ["22, 22, 22"];
+    let particleW = 0;
+    let particleH = 0;
+
+    function getInkRgb() {
+        const val = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim();
+        const hex = val.replace("#", "");
+        if (hex.length < 6) return "22, 22, 22";
+        const n = parseInt(hex.slice(0, 6), 16);
+        return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+    }
+
+    function refreshParticleColors() {
+        const rgb = getInkRgb();
+        particleColors = [rgb];
+        particleList.forEach((p) => { p.color = rgb; });
     }
 
     function initParticles() {
         const canvas = document.getElementById("particleCanvas");
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
+        particleCtx = ctx;
         let particles = [];
+        particleList = particles;
         let w, h;
 
         function resize() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
+            w = particleW = canvas.width = window.innerWidth;
+            h = particleH = canvas.height = window.innerHeight;
         }
         resize();
         window.addEventListener("resize", resize);
 
-        const count = Math.min(80, Math.floor(w * h / 12000));
-        const goldRgb = "255, 209, 0";
+        const count = Math.min(50, Math.floor(w * h / 16000));
+        const ink = getInkRgb();
 
         for (let i = 0; i < count; i++) {
             particles.push({
@@ -47,12 +247,14 @@
                 y: Math.random() * h,
                 vx: (Math.random() - 0.5) * 0.4,
                 vy: (Math.random() - 0.5) * 0.4,
-                r: Math.random() * 2 + 1,
-                alpha: Math.random() * 0.4 + 0.1,
+                r: Math.random() * 2 + 0.8,
+                alpha: Math.random() * 0.35 + 0.08,
+                color: ink,
             });
         }
 
         function draw() {
+            if (!particleCtx) return;
             ctx.clearRect(0, 0, w, h);
             particles.forEach((p) => {
                 p.x += p.vx;
@@ -64,7 +266,7 @@
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${goldRgb}, ${p.alpha})`;
+                ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
                 ctx.fill();
             });
 
@@ -73,11 +275,11 @@
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 120) {
+                    if (dist < 130) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(${goldRgb}, ${0.06 * (1 - dist / 120)})`;
+                        ctx.strokeStyle = `rgba(${particles[i].color}, ${0.04 * (1 - dist / 130)})`;
                         ctx.stroke();
                     }
                 }
@@ -89,31 +291,32 @@
         draw();
     }
 
+    /* ==========================================================
+       HERO ENTRANCE
+       ========================================================== */
     function initHeroAnimations() {
         if (typeof gsap === "undefined") return;
 
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-        tl.from("#heroGreeting", { y: 40, opacity: 0, duration: 0.6 })
-            .from("#heroName", { y: 50, opacity: 0, duration: 0.7 }, "-=0.3")
-            .from("#heroTyped", { y: 40, opacity: 0, duration: 0.6 }, "-=0.3")
-            .from("#heroBio", { y: 30, opacity: 0, duration: 0.6 }, "-=0.3")
-            .from("#heroCta .btn", { y: 30, opacity: 0, duration: 0.5, stagger: 0.12 }, "-=0.3")
-            .from("#heroSocials .social-icon", { y: 20, opacity: 0, duration: 0.4, stagger: 0.08 }, "-=0.2")
-            .from("#heroVisual", { scale: 0.6, opacity: 0, duration: 0.8, ease: "back.out(1.7)" }, "-=0.6");
-
-        gsap.to(".shape", {
-            y: "random(-20, 20)",
-            x: "random(-20, 20)",
-            rotation: "random(-15, 15)",
-            duration: "random(6, 10)",
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-            stagger: 0.3,
-        });
+        tl.from("#heroEyebrow", { y: 30, opacity: 0, duration: 0.5 })
+            .from("#heroTitle .hero__word", {
+                y: "110%",
+                opacity: 0,
+                duration: 0.9,
+                stagger: 0.14,
+                ease: "expo.out",
+            }, "-=0.2")
+            .from("#heroLead", { y: 30, opacity: 0, duration: 0.6 }, "-=0.4")
+            .from("#heroCta .btn", { y: 24, opacity: 0, duration: 0.5, stagger: 0.1 }, "-=0.3")
+            .from("#heroSocials .social-icon", { y: 16, opacity: 0, duration: 0.4, stagger: 0.07 }, "-=0.2")
+            .from("#heroVisual", { scale: 0.7, opacity: 0, duration: 0.8, ease: "back.out(1.6)" }, "-=0.7")
+            .from(".hero__marquee", { y: 40, opacity: 0, duration: 0.6 }, "-=0.5");
     }
 
+    /* ==========================================================
+       TYPED TEXT
+       ========================================================== */
     function initTyped() {
         const el = $("#typed");
         if (!el || typeof Typed === "undefined") return;
@@ -129,12 +332,24 @@
             typeSpeed: 55,
             backSpeed: 30,
             backDelay: 1600,
-            startDelay: 400,
+            startDelay: 900,
             loop: true,
             smartBackspace: true,
         });
     }
 
+    /* ==========================================================
+       MARQUEE
+       ========================================================== */
+    function initMarquee() {
+        const track = $(".hero__marquee-track");
+        if (!track) return;
+        track.innerHTML += track.innerHTML;
+    }
+
+    /* ==========================================================
+       NAVBAR
+       ========================================================== */
     function initNavbarScroll() {
         const navbar = $("#navbar");
         if (!navbar) return;
@@ -275,6 +490,9 @@
         });
     }
 
+    /* ==========================================================
+       CONTACT FORM
+       ========================================================== */
     function initContactForm() {
         const form = $("#contactForm");
         if (!form) return;
@@ -355,7 +573,7 @@
 
             if (status) {
                 status.textContent =
-                    "✓ Thanks! Your mail app should open — otherwise email me directly.";
+                    "Thanks! Your mail app should open — otherwise email me directly.";
                 status.className = "form__status success";
             }
             form.reset();
@@ -370,6 +588,9 @@
         });
     }
 
+    /* ==========================================================
+       COPY EMAIL
+       ========================================================== */
     function initCopyEmail() {
         const cards = $$("[data-copy]");
         if (!cards.length) return;
@@ -379,9 +600,11 @@
             const value = card.getAttribute("data-copy");
 
             const doCopy = (e) => {
-                if (!copyIcon || !copyIcon.contains(e.target)) return;
-                e.preventDefault();
-                copyToClipboard(value);
+                if (copyIcon && copyIcon.contains(e.target)) {
+                    e.preventDefault();
+                    copyToClipboard(value);
+                }
+                // Allow default behavior (mailto) for other clicks
             };
 
             card.addEventListener("click", doCopy);
@@ -425,9 +648,13 @@
         toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2600);
     }
 
+    /* ==========================================================
+       3D TILT CARDS
+       ========================================================== */
     function initTiltCards() {
         const cards = $$("[data-tilt]");
         if (!cards.length) return;
+        if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
 
         cards.forEach((card) => {
             card.addEventListener("mousemove", (e) => {
@@ -436,26 +663,29 @@
                 const y = e.clientY - rect.top;
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / centerY * -8;
-                const rotateY = (x - centerX) / centerX * 8;
-                card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`;
+                const rotateX = (y - centerY) / centerY * -5;
+                const rotateY = (x - centerX) / centerX * 5;
+                card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
             });
 
             card.addEventListener("mouseleave", () => {
-                card.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)";
-                card.style.transition = "transform 0.5s ease";
-                setTimeout(() => { card.style.transition = ""; }, 500);
+                card.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg)";
+                card.style.transition = "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)";
+                setTimeout(() => { card.style.transition = ""; }, 600);
             });
         });
     }
 
+    /* ==========================================================
+       SCROLL REVEALS
+       ========================================================== */
     function initScrollReveal() {
         if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
 
         gsap.registerPlugin(ScrollTrigger);
 
         const revealItems = $$(".reveal");
-        revealItems.forEach((el) => {
+        revealItems.forEach((el, i) => {
             gsap.from(el, {
                 scrollTrigger: {
                     trigger: el,
@@ -465,6 +695,7 @@
                 y: 50,
                 opacity: 0,
                 duration: 0.7,
+                delay: i * 0.05,
                 ease: "power3.out",
             });
         });
@@ -494,7 +725,8 @@
                 },
                 y: 60,
                 opacity: 0,
-                duration: 0.5,
+                scale: 0.96,
+                duration: 0.55,
                 delay: i * 0.08,
                 ease: "back.out(1.4)",
             });
@@ -508,11 +740,11 @@
                     start: "top 85%",
                     toggleActions: "play none none none",
                 },
-                y: 50,
+                y: 70,
                 opacity: 0,
-                duration: 0.5,
-                delay: i * 0.1,
-                ease: "back.out(1.4)",
+                duration: 0.6,
+                delay: i * 0.12,
+                ease: "power3.out",
             });
         });
 
@@ -524,10 +756,10 @@
                     start: "top 85%",
                     toggleActions: "play none none none",
                 },
-                x: -40,
+                x: i % 2 === 0 ? -50 : 50,
                 opacity: 0,
                 duration: 0.6,
-                delay: i * 0.15,
+                delay: i * 0.12,
                 ease: "power3.out",
             });
         });
@@ -558,14 +790,14 @@
                 },
                 y: 40,
                 opacity: 0,
-                scale: 0.95,
+                scale: 0.92,
                 duration: 0.5,
                 delay: i * 0.1,
                 ease: "back.out(1.4)",
             });
         });
 
-        gsap.utils.toArray(".about__info-item").forEach((item, i) => {
+        gsap.utils.toArray(".about__fact").forEach((item, i) => {
             gsap.from(item, {
                 scrollTrigger: {
                     trigger: item,
@@ -579,8 +811,88 @@
                 ease: "power2.out",
             });
         });
+
+        const contactCards = $$(".contact-card");
+        contactCards.forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 88%",
+                    toggleActions: "play none none none",
+                },
+                x: -40,
+                opacity: 0,
+                duration: 0.5,
+                delay: i * 0.08,
+                ease: "power3.out",
+            });
+        });
+
+        gsap.from(".contact__form", {
+            scrollTrigger: {
+                trigger: ".contact__form",
+                start: "top 88%",
+                toggleActions: "play none none none",
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.6,
+            ease: "power3.out",
+        });
+
+        const sectionIndexes = $$(".section__index");
+        sectionIndexes.forEach((el) => {
+            gsap.from(el, {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 90%",
+                    toggleActions: "play none none none",
+                },
+                scale: 0.6,
+                opacity: 0,
+                rotate: -8,
+                duration: 0.6,
+                ease: "back.out(1.6)",
+            });
+        });
     }
 
+    /* ==========================================================
+       SKILL BARS
+       ========================================================== */
+    function initSkillBars() {
+        const bars = $$(".skill-bar");
+        if (!bars.length) return;
+
+        const fillBar = (bar) => {
+            const fill = $(".skill-bar__fill", bar);
+            if (!fill) return;
+            const level = parseInt(bar.getAttribute("data-level"), 10);
+            if (isNaN(level)) return;
+            fill.style.width = level + "%";
+        };
+
+        if (typeof IntersectionObserver !== "undefined") {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            fillBar(entry.target);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.3 }
+            );
+            bars.forEach((bar) => observer.observe(bar));
+        } else {
+            bars.forEach(fillBar);
+        }
+    }
+
+    /* ==========================================================
+       DASHBOARD COUNTERS
+       ========================================================== */
     function initCounterAnimation() {
         if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") return;
 
@@ -608,6 +920,9 @@
         });
     }
 
+    /* ==========================================================
+       DASHBOARD STATS (GitHub / LeetCode)
+       ========================================================== */
     async function initDashboardStats() {
         const githubUsername = "keshabpadhan";
         const leetcodeUsername = "keshabpadhan";
@@ -902,5 +1217,190 @@
             }
             if (leetcodeDatesEl) leetcodeDatesEl.textContent = `${activeDays} days active`;
         }
+    }
+    /* ==========================================================
+       TERMINAL (hero)
+       ========================================================== */
+    function initTerminal() {
+        const terminal = $("#terminal");
+        const linesEl = $("#terminalLines");
+        const input = $("#terminalInput");
+        const clockEl = $("#terminalClock");
+        const bodyEl = $("#terminalBody");
+        if (!terminal || !linesEl || !input) return;
+
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const pad = (n) => String(n).padStart(2, "0");
+        const updateClock = () => {
+            if (!clockEl) return;
+            const d = new Date();
+            clockEl.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        };
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        const scrollBottom = () => {
+            if (bodyEl) bodyEl.scrollTop = bodyEl.scrollHeight;
+        };
+
+        const addLine = (html, className) => {
+            const div = document.createElement("div");
+            div.className = "t-line" + (className ? " " + className : "");
+            div.innerHTML = html;
+            linesEl.appendChild(div);
+            scrollBottom();
+            return div;
+        };
+
+        const output = (text) => {
+            addLine(`<span class="t-line__text t-out"></span>`).querySelector(".t-line__text").textContent = text;
+        };
+
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+        const typeText = async (target, text, speed) => {
+            if (reduceMotion) {
+                target.textContent = text;
+                scrollBottom();
+                return;
+            }
+            for (let i = 0; i < text.length; i++) {
+                target.textContent = text.slice(0, i + 1);
+                scrollBottom();
+                await sleep(speed);
+            }
+        };
+
+        const typeCommand = async (cmd) => {
+            const line = addLine("");
+            const prompt = document.createElement("span");
+            prompt.className = "t-line__prompt";
+            prompt.textContent = "keshab@portfolio:$";
+            const textEl = document.createElement("span");
+            textEl.className = "t-line__text t-cmd";
+            line.appendChild(prompt);
+            line.appendChild(textEl);
+            await typeText(textEl, cmd, reduceMotion ? 0 : 22);
+        };
+
+        const typeOutput = (text) => {
+            const line = addLine("");
+            const textEl = document.createElement("span");
+            textEl.className = "t-line__text t-out";
+            line.appendChild(textEl);
+            return typeText(textEl, text, reduceMotion ? 0 : 10);
+        };
+
+        const HELP = [
+            "Available commands:",
+            "  about     — who I am",
+            "  skills    — my tech stack",
+            "  projects  — what I'm building",
+            "  contact   — how to reach me",
+            "  socials   — profile links",
+            "  theme     — toggle light / dark",
+            "  date      — current time",
+            "  clear     — clear the screen",
+            "",
+            'Type a command and press Enter.'
+        ].join("\n");
+
+        const runCommand = async (raw) => {
+            const cmd = (raw || "").trim();
+            if (cmd) await typeCommand(cmd);
+
+            const parts = cmd.toLowerCase().split(/\s+/);
+            const key = parts[0] || "";
+
+            switch (key) {
+                case "help":
+                    await typeOutput(HELP);
+                    break;
+                case "about":
+                    await typeOutput(
+                        "Keshab Padhan — 2nd year BTech Computer Science @ SOA ITER.\n" +
+                        "Aspiring software developer, DSA problem solver & web developer.\n" +
+                        "Open to internships in 2026."
+                    );
+                    break;
+                case "skills":
+                    await typeOutput(
+                        "Languages : C · C++ · Java · Python · JavaScript\n" +
+                        "Frontend  : HTML · CSS · JavaScript · React (learning)\n" +
+                        "Backend   : Node.js · Express.js (learning)\n" +
+                        "Database  : SQL · MySQL · MongoDB (learning)\n" +
+                        "Tools     : Git · GitHub · VS Code · Linux · Postman\n" +
+                        "Core      : DSA · OOP · DBMS · OS · Computer Networks"
+                    );
+                    break;
+                case "projects":
+                    await typeOutput(
+                        "3 projects in the works (see the Projects section below).\n" +
+                        "All experiments live at github.com/keshabpadhan"
+                    );
+                    break;
+                case "contact":
+                case "socials":
+                    await typeOutput(
+                        "email    : thekeshabpadhan@gmail.com\n" +
+                        "github   : github.com/keshabpadhan\n" +
+                        "linkedin : linkedin.com/in/keshabpadhan\n" +
+                        "leetcode : leetcode.com/u/keshabpadhan"
+                    );
+                    break;
+                case "theme":
+                    if (typeof window.__kpSetTheme === "function") {
+                        const next = window.__kpGetTheme() === "dark" ? "light" : "dark";
+                        window.__kpSetTheme(next, true);
+                        await typeOutput(`theme switched to ${next}`);
+                    }
+                    break;
+                case "date":
+                    await typeOutput(new Date().toString());
+                    break;
+                case "clear":
+                    linesEl.innerHTML = "";
+                    break;
+                case "whoami":
+                    await typeOutput("keshabpadhan");
+                    break;
+                case "":
+                    break;
+                default:
+                    await typeOutput(`command not found: ${key}. Type "help" to see commands.`);
+            }
+        };
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            const value = input.value;
+            input.value = "";
+            runCommand(value);
+        });
+
+        terminal.addEventListener("click", () => input.focus());
+
+        const playIntro = async () => {
+            await sleep(700);
+            await typeCommand("whoami");
+            await typeOutput("keshabpadhan — CS undergrad @ SOA ITER, batch of 2029");
+            await sleep(120);
+            await typeCommand("cat status.txt");
+            await typeOutput(
+                "> 2nd year BTech Computer Science\n" +
+                "> DSA · Web Development · Problem Solving\n" +
+                "> status: open to internships — 2026"
+            );
+            await sleep(180);
+            await typeCommand("help");
+            await typeOutput(HELP);
+            if (!reduceMotion && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+                input.focus();
+            }
+        };
+
+        playIntro();
     }
 })();
