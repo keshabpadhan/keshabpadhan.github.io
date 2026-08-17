@@ -50,4 +50,4 @@ A quick note on some of the external tools used to bring this site to life:
 
 ---
 
-**Designed & built with 💛 by Keshab Padhan**
+**Designed & built with &#9829; by Keshab Padhan**
